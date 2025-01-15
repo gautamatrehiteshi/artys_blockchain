@@ -30,17 +30,29 @@ Note: We might need to generate/create keyring and run this command, if there ar
 3. Move back to directory  BasicNetwork-2.0.
 4. Open deployChaincode.sh file.
 5. Change the configurations of presetup function( if necessary).
-6. At the end of the file. comment out the rest of the functions except "presetup".
-7. Run command `./deployChaincode.sh` after the above step.
-8. The above command will install all the node js packages required for chaincode setup in the BasicNetwork-2.0->artifacts->src->github.com->chaincode_artys folder.
 9. Enusre the variable CC_SRC_PATH in deployChaincode file points to the path where your chaincode is presetup.
-10. After that, we comment out the all the functions except "packageChaincode" and run the `./deployChaincode.sh` command in terminal.This will create a zip file for the chaincode which will be utilized to deploy the chaincode.
-11. After that, we comment out the all the functions except "installChaincode" and run the `./deployChaincode.sh` command in terminal.This function will ensure that chaincode is installed on the given channel for all the peers available.
-12. After that, we comment out the all the functions except "queryInstalled" and run the ./deployChaincode.sh command in terminal.This function will ensure that chaincode is installed properly on all the peers and will provide the package id and description provided for the chaincode.
-13. After that, we comment out the all the functions except "approveForMyOrg1" and run the ./deployChaincode.sh command in terminal.This function will ensure that the installed chaincode is approved by the first organization and the peer as the chaincode definition can only be changed when majority of user approve the new chaincode definition.
-14. Repeat the same steps for "approveForMyOrg2" as above.
-15. When the above steps are completed without any errors, then we can run  `./deployChaincode.sh` file by commenting all the functions except "checkCommitReadyness". This function will return an object with the boolean values containing the approval of different organization peers.
-16. After that, we comment out the all the functions except "commitChaincodeDefinition" and run the `./deployChaincode.sh` command in terminal.This function will ensure that the  approved chaincode is installed everywhere on the chain.
-17. The "queryCommitted" function checks the current status of a chaincode that has been committed to a channel. It provides information about the chaincode, such as its name, version, and sequence number, which is useful for debugging, verification, and managing chaincode.(Optional).
-18. After that "chaincodeInvokeInit" function can be called to initialize the chaincpode by running the `./deployChaincode.sh` file and commenting out rest of the functions.
-19.  The "chaincodeInvoke" is used to create a transaction on the fabric.We can see the transactions on  [localhost:5984](http://0.0.0.0:5984/_utils). This is a couch db instance.
+7. Run command `./deployChaincode.sh` after the above step.
+
+# Functions defined in deployChaincode file
+
+
+1. "packageChaincode" - This will create a zip file for the chaincode which will be utilized to deploy the chaincode.
+
+2. "installChaincode" - This function will ensure that chaincode is installed on the given channel for all the peers available.
+
+3.  "queryInstalled" - This function will ensure that chaincode is installed properly on all the peers and will provide the package id and description provided for the chaincode.
+
+4. "approveForMyOrg1" - This function will ensure that the installed chaincode is approved by the first organization and the peer as the 
+chaincode definition can only be changed when majority of user approve the new chaincode definition.
+
+5. "approveForMyOrg2"- same as point 4.
+
+6. "checkCommitReadyness" - This function will return an object with the boolean values containing the approval of different organization peers.
+
+7.  "commitChaincodeDefinition" - This function will ensure that the  approved chaincode is installed everywhere on the chain.
+
+8. "queryCommitted" - This function checks the current status of a chaincode that has been committed to a channel. It provides information about the chaincode, such as its name, version, and sequence number, which is useful for debugging, verification, and managing chaincode..
+
+9. "chaincodeInvokeInit" - This function is called to initialize the chaincode.
+
+10. "chaincodeInvoke" - This function is used to create a transaction on the fabric.We can see the transactions on  [localhost:5984](http://0.0.0.0:5984/_utils). This is a couch db instance.
