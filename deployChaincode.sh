@@ -47,12 +47,47 @@ setGlobalsForPeer1Org2() {
 
 }
 
+    # presetup() {
+    #     echo Installing node dependencies ...
+    #     pushd ./artifacts/src/github.com/chaincode_artys
+    #     npm install 
+    #     popd
+    #     echo Installed node dependencies
+    # }
+
 presetup() {
-    echo Installing node dependencies ...
+    echo "Installing node dependencies ..."
+
+    # Check if nvm is installed
+    if ! command -v nvm &>/dev/null; then
+        echo "nvm is not installed. Installing nvm..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+    else
+        echo "nvm is already installed."
+    fi
+
+    # Ensure Node.js version 12.x.x is installed and in use
+    REQUIRED_NODE_VERSION="12.22.12"
+    echo "Checking for Node.js version $REQUIRED_NODE_VERSION..."
+    if ! nvm ls "$REQUIRED_NODE_VERSION" &>/dev/null; then
+        echo "Node.js $REQUIRED_NODE_VERSION.x is not installed. Installing..."
+        nvm install "$REQUIRED_NODE_VERSION"
+    else
+        echo "Node.js $REQUIRED_NODE_VERSION.x is already installed."
+    fi
+
+    # Use the specified Node.js version
+    nvm use "$REQUIRED_NODE_VERSION"
+    echo "Using Node.js $(node -v)"
+
+    # Install dependencies in the chaincode directory
     pushd ./artifacts/src/github.com/chaincode_artys
     npm install 
     popd
-    echo Installed node dependencies
+    echo "Installed node dependencies"
 }
 
 
@@ -238,7 +273,7 @@ peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} \
 
 
 # Run this function if you add any new dependency in chaincode
-# presetup
+ presetup
 
 # packageChaincode
 #installChaincode
@@ -253,4 +288,4 @@ peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} \
 # sleep 5
  #chaincodeInvoke
 # sleep 3
-chaincodeQuery
+#chaincodeQuery
