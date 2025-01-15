@@ -274,18 +274,20 @@ peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} \
 
 # Run this function if you add any new dependency in chaincode
  presetup
-
-# packageChaincode
-#installChaincode
-# queryInstalled
- #approveForMyOrg1
-#checkCommitReadyness
-#approveForMyOrg2
-# checkCommitReadyness
- #commitChaincodeDefinition
-# queryCommitted
-#chaincodeInvokeInit
-# sleep 5
- #chaincodeInvoke
-# sleep 3
-#chaincodeQuery
+ sleep 20
+#packageChaincode
+installChaincode
+queryInstalled
+approveForMyOrg1
+sleep 20
+checkCommitReadyness
+approveForMyOrg2
+checkCommitReadyness
+sleep 20
+commitChaincodeDefinition
+queryCommitted
+chaincodeInvokeInit
+sleep 5
+chaincodeInvoke
+sleep 3
+chaincodeQuery
