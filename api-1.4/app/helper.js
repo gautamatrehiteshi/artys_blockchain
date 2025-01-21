@@ -95,13 +95,6 @@ let getRegisteredUser = async function (username, userOrg, isJson) {
 let setupChaincodeDeploy = function () {
 	process.env.GOPATH = path.join(__dirname, hfc.getConfigSetting('CC_SRC_PATH'));
 };
-//commented function gautam
-// let getLogger = function (moduleName) {
-// 	let logger = log4js.getLogger(moduleName);
-// 	logger.setLevel('DEBUG');
-// 	return logger;
-// };
-
 exports.getClientForOrg = getClientForOrg;
 exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getRegisteredUser = getRegisteredUser;

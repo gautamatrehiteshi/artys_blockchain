@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 'use strict';
-let log4js = require('log4js');
+
 // let logger = log4js.getLogger('SampleWebApp');
 let express = require('express');
 let bodyParser = require('body-parser');
@@ -104,6 +104,9 @@ function getErrorMessage(field) {
 ///////////////////////// REST ENDPOINTS START HERE ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Register and enroll user
+
+
+
 app.post('/users', async function (req, res) {
 	let username = req.body.username;
 	let orgName = req.body.orgName;
@@ -155,6 +158,7 @@ app.post('/channels', async function (req, res) {
 	let message = await createChannel.createChannel(channelName, channelConfigPath, req.username, req.orgname);
 	res.send(message);
 });
+
 // Join Channel
 app.post('/channels/:channelName/peers', async function (req, res) {
 	console.log('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
@@ -177,6 +181,8 @@ app.post('/channels/:channelName/peers', async function (req, res) {
 	let message = await join.joinChannel(channelName, peers, req.username, req.orgname);
 	res.send(message);
 });
+
+
 // Install chaincode on target peers
 app.post('/chaincodes', async function (req, res) {
 	console.log('==================== INSTALL CHAINCODE ==================');
@@ -213,6 +219,29 @@ app.post('/chaincodes', async function (req, res) {
 	let message = await install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, chaincodeType, req.username, req.orgname)
 	res.send(message);
 });
+// Query to fetch all Installed/instantiated chaincodes
+
+app.get('/chaincodes', async function (req, res) {
+	let peer = req.query.peer;
+	let installType = req.query.type;
+	console.log('================ GET INSTALLED CHAINCODES ======================');
+
+	let message = await query.getInstalledChaincodes(peer, null, 'installed', req.username, req.orgname)
+	res.send(message);
+});
+//Query for Channel instantiated chaincodes
+app.get('/channels/:channelName/chaincodes', async function (req, res) {
+	console.log('================ GET INSTANTIATED CHAINCODES ======================');
+	console.log('channelName : ' + req.params.channelName);
+	let peer = req.query.peer;
+
+	let message = await query.getInstalledChaincodes(peer, req.params.channelName, 'instantiated', req.username, req.orgname);
+	res.send(message);
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////WORKING////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Instantiate chaincode on target peers
 app.post('/channels/:channelName/chaincodes', async function (req, res) {
 	console.log('==================== INSTANTIATE CHAINCODE ==================');
@@ -265,7 +294,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
 		let chaincodeName = req.params.chaincodeName;
 		let channelName = req.params.channelName;
 		let fcn = req.body.fcn;
-		let args = req.body.Args;
+		let args = req.body.args;
 
 		console.log('channelName  : ' + channelName);
 		console.log('chaincodeName : ' + chaincodeName);
@@ -281,7 +310,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
 		}
 
 		const start = Date.now();
-		let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname);
+			let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname);
 		const latency = Date.now() - start;
 
 
@@ -397,24 +426,8 @@ app.get('/channels/:channelName', async function (req, res) {
 	let message = await query.getChainInfo(peer, req.params.channelName, req.username, req.orgname);
 	res.send(message);
 });
-//Query for Channel instantiated chaincodes
-app.get('/channels/:channelName/chaincodes', async function (req, res) {
-	console.log('================ GET INSTANTIATED CHAINCODES ======================');
-	console.log('channelName : ' + req.params.channelName);
-	let peer = req.query.peer;
 
-	let message = await query.getInstalledChaincodes(peer, req.params.channelName, 'instantiated', req.username, req.orgname);
-	res.send(message);
-});
-// Query to fetch all Installed/instantiated chaincodes
-app.get('/chaincodes', async function (req, res) {
-	let peer = req.query.peer;
-	let installType = req.query.type;
-	console.log('================ GET INSTALLED CHAINCODES ======================');
 
-	let message = await query.getInstalledChaincodes(peer, null, 'installed', req.username, req.orgname)
-	res.send(message);
-});
 // Query to fetch channels
 app.get('/channels', async function (req, res) {
 	console.log('================ GET CHANNELS ======================');

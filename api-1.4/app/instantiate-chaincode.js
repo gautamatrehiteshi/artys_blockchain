@@ -61,7 +61,6 @@ let instantiateChaincode = async function(peers, channelName, chaincodeName, cha
 			        }
 		        }
 		};
-
 		if (functionName)
 			request.fcn = functionName;
 

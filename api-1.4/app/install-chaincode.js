@@ -31,7 +31,7 @@ let installChaincode = async function(peers, chaincodeName, chaincodePath,
 
 		let request = {
 			targets: peers,
-			chaincodePath: chaincodePath,
+			chaincodePath: path.join(__dirname,'../'),
 			chaincodeId: chaincodeName,
 			chaincodeVersion: chaincodeVersion,
 			chaincodeType: chaincodeType

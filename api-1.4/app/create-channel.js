@@ -19,6 +19,9 @@ let path = require('path');
 let helper = require('./helper.js');
 // let logger = helper.getLogger('Create-Channel');
 //Attempt to send a request to the orderer with the sendTransaction method
+
+//NOTE:THIS CREATE CHANNEL FUNCTION WILL ONLY WORK WHEN THERE IS NO EXISITING CHANNEL OF THE SAME NAME.
+
 let createChannel = async function(channelName, channelConfigPath, username, orgName) {
 	console.log('\n====== Creating Channel \'' + channelName + '\' ======\n');
 	try {
@@ -27,7 +30,9 @@ let createChannel = async function(channelName, channelConfigPath, username, org
 		console.log('Successfully got the fabric client for the organization "%s"', orgName);
 
 		// read in the envelope for the channel config raw bytes
-		let envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
+		// let envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
+		let envelope = fs.readFileSync(path.join('/home/gautam/blockchain/artys_blockchain/artifacts/channel/mychannel.tx'));
+
 		// extract the channel config bytes from the envelope to be signed
 		let channelConfig = client.extractChannelConfig(envelope);
 
