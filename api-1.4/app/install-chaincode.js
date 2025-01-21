@@ -16,6 +16,7 @@
 'use strict';
 let util = require('util');
 let helper = require('./helper.js');
+let path=require('path')
 
 let installChaincode = async function(peers, chaincodeName, chaincodePath,
 	chaincodeVersion, chaincodeType, username, org_name) {
@@ -28,10 +29,10 @@ let installChaincode = async function(peers, chaincodeName, chaincodePath,
 		// first setup the client for this org
 		let client = await helper.getClientForOrg(org_name, username);
 		console.log('Successfully got the fabric client for the organization "%s"', org_name);
-
+		console.log(chaincodePath)
 		let request = {
 			targets: peers,
-			chaincodePath: path.join(__dirname,'../'),
+			chaincodePath: path.join(__dirname,'../artifacts/src/github.com/chaincode_artys'),
 			chaincodeId: chaincodeName,
 			chaincodeVersion: chaincodeVersion,
 			chaincodeType: chaincodeType

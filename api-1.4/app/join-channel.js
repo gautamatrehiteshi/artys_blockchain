@@ -31,7 +31,6 @@ let joinChannel = async function(channel_name, peers, username, org_name) {
 		let client = await helper.getClientForOrg(org_name, username);
 		console.log('Successfully got the fabric client for the organization "%s"', org_name);
 		let channel = client.getChannel(channel_name);
-		console.log(channel,'channeellllllll')
 		if(!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channel_name);
 			console.log(message);
