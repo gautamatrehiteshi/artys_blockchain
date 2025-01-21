@@ -14,23 +14,22 @@
  *  limitations under the License.
  */
 'use strict';
-var util = require('util');
-var helper = require('./helper.js');
-var logger = helper.getLogger('install-chaincode');
+let util = require('util');
+let helper = require('./helper.js');
 
-var installChaincode = async function(peers, chaincodeName, chaincodePath,
+let installChaincode = async function(peers, chaincodeName, chaincodePath,
 	chaincodeVersion, chaincodeType, username, org_name) {
-	logger.debug('\n\n============ Install chaincode on organizations ============\n');
+	console.log('\n\n============ Install chaincode on organizations ============\n');
 	helper.setupChaincodeDeploy();
 	let error_message = null;
 	try {
-		logger.info('Calling peers in organization "%s" to join the channel', org_name);
+		console.log('Calling peers in organization "%s" to join the channel', org_name);
 
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
 
-		var request = {
+		let request = {
 			targets: peers,
 			chaincodePath: chaincodePath,
 			chaincodeId: chaincodeName,
@@ -41,38 +40,38 @@ var installChaincode = async function(peers, chaincodeName, chaincodePath,
 		// the returned object has both the endorsement results
 		// and the actual proposal, the proposal will be needed
 		// later when we send a transaction to the orederer
-		var proposalResponses = results[0];
-		var proposal = results[1];
+		let proposalResponses = results[0];
+		let proposal = results[1];
 
 		// lets have a look at the responses to see if they are
 		// all good, if good they will also include signatures
 		// required to be committed
-		var all_good = true;
-		for (var i in proposalResponses) {
+		let all_good = true;
+		for (let i in proposalResponses) {
 			let one_good = false;
 			if (proposalResponses && proposalResponses[i].response &&
 				proposalResponses[i].response.status === 200) {
 				one_good = true;
-				logger.info('install proposal was good');
+				console.log('install proposal was good');
 			} else {
-				logger.error('install proposal was bad %j',proposalResponses.toJSON());
+				console.log('install proposal was bad %j',proposalResponses.toJSON());
 			}
 			all_good = all_good & one_good;
 		}
 		if (all_good) {
-			logger.info('Successfully sent install Proposal and received ProposalResponse');
+			console.log('Successfully sent install Proposal and received ProposalResponse');
 		} else {
 			error_message = 'Failed to send install Proposal or receive valid response. Response null or status is not 200'
-			logger.error(error_message);
+			console.log(error_message);
 		}
 	} catch(error) {
-		logger.error('Failed to install due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to install due to error: ' + error.stack ? error.stack : error);
 		error_message = error.toString();
 	}
 
 	if (!error_message) {
 		let message = util.format('Successfully installed chaincode');
-		logger.info(message);
+		console.log(message);
 		// build a response to send back to the REST caller
 		let response = {
 			success: true,
@@ -81,7 +80,7 @@ var installChaincode = async function(peers, chaincodeName, chaincodePath,
 		return response;
 	} else {
 		let message = util.format('Failed to install due to:%s',error_message);
-		logger.error(message);
+		console.log(message);
 		throw new Error(message);
 	}
 };

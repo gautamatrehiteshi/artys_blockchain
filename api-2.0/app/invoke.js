@@ -9,7 +9,7 @@ const helper = require('./helper')
 
 const invokeTransaction = async (channelName, chaincodeName, fcn, args, username, org_name, transientData) => {
     try {
-        logger.debug(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
+        console.log(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
 
         // load the network configuration
         // const ccpPath =path.resolve(__dirname, '..', 'config', 'connection-org1.json');

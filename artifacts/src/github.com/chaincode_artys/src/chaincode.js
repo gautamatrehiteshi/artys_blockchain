@@ -89,7 +89,7 @@ async function handleOutput (promise) {
     const payload = await promise;
     return shim.success(Buffer.from(JSON.stringify(payload)));
   } catch (err) {
-    logger.error(err);
+    console.log(err);
     return shim.error(err.message);
   }
 }

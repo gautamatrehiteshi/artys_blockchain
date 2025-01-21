@@ -7,7 +7,7 @@ const CRUD = require('./crud');
 async function invokeQuery (stub, params, qryDefinition, bookmark, pageSize) {
   const logger = stub.newLogger('invokeQuery');
   const arg = initObject(stub.model, params, qryDefinition.input);
-  logger.info(`Querying with ${JSON.stringify(arg)}`);
+  console.log(`Querying with ${JSON.stringify(arg)}`);
   await isCorrectType(stub, arg, qryDefinition.input);
 
   const payload = await queryLedger(stub, qryDefinition, arg, bookmark, pageSize);

@@ -13,23 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-var fs = require('fs');
-var path = require('path');
+let fs = require('fs');
+let path = require('path');
 
-var helper = require('./helper.js');
-var logger = helper.getLogger('Create-Channel');
+let helper = require('./helper.js');
+// let logger = helper.getLogger('Create-Channel');
 //Attempt to send a request to the orderer with the sendTransaction method
-var createChannel = async function(channelName, channelConfigPath, username, orgName) {
-	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
+let createChannel = async function(channelName, channelConfigPath, username, orgName) {
+	console.log('\n====== Creating Channel \'' + channelName + '\' ======\n');
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(orgName);
-		logger.debug('Successfully got the fabric client for the organization "%s"', orgName);
+		let client = await helper.getClientForOrg(orgName);
+		console.log('Successfully got the fabric client for the organization "%s"', orgName);
 
 		// read in the envelope for the channel config raw bytes
-		var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
+		let envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
 		// extract the channel config bytes from the envelope to be signed
-		var channelConfig = client.extractChannelConfig(envelope);
+		let channelConfig = client.extractChannelConfig(envelope);
 
 		//Acting as a client in the given organization provided with "orgName" param
 		// sign the channel config bytes as "endorsement", this is required by
@@ -45,22 +45,22 @@ var createChannel = async function(channelName, channelConfigPath, username, org
 		};
 
 		// send to orderer
-		var response = await client.createChannel(request)
-		logger.debug(' response ::%j', response);
+		let response = await client.createChannel(request)
+		console.log(' response ::%j', response);
 		if (response && response.status === 'SUCCESS') {
-			logger.debug('Successfully created the channel.');
+			console.log('Successfully created the channel.');
 			let response = {
 				success: true,
 				message: 'Channel \'' + channelName + '\' created Successfully'
 			};
 			return response;
 		} else {
-			logger.error('\n!!!!!!!!! Failed to create the channel \'' + channelName +
+			console.log('\n!!!!!!!!! Failed to create the channel \'' + channelName +
 				'\' !!!!!!!!!\n\n');
 			throw new Error('Failed to create the channel \'' + channelName + '\'');
 		}
 	} catch (err) {
-		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack :	err);
+		console.log('Failed to initialize the channel: ' + err.stack ? err.stack :	err);
 		throw new Error('Failed to initialize the channel: ' + err.toString());
 	}
 };

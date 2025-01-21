@@ -1,10 +1,10 @@
-var util = require('util');
-var path = require('path');
-var hfc = require('fabric-client');
+let util = require('util');
+let path = require('path');
+let hfc = require('fabric-client');
 
-var file = 'network-config%s.yaml';
+let file = 'network-config%s.yaml';
 
-var env = process.env.TARGET_NETWORK;
+let env = process.env.TARGET_NETWORK;
 if (env)
 	file = util.format(file, '-' + env);
 else

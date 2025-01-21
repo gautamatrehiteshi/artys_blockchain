@@ -13,28 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-var util = require('util');
-var helper = require('./helper.js');
-var logger = helper.getLogger('Query');
+let util = require('util');
+let helper = require('./helper.js');
 
-var queryChaincode = async function (peer, channelName, chaincodeName, args, fcn, username, org_name) {
+// let queryChaincode = async function (peer, channelName, chaincodeName, args, fcn, username, org_name) {
+let queryChaincode = async function (peer, channelName, chaincodeName, username, org_name) {
+
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-		var channel = client.getChannel(channelName);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
+		let channel = client.getChannel(channelName);
+		console.log(channel,'channelelllllllll')
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
+			console.log(message);
 			throw new Error(message);
 		}
 
 		// send query
-		var request = {
+		let request = {
 			targets: [peer], //queryByChaincode allows for multiple targets
 			chaincodeId: chaincodeName,
-			fcn: fcn,
-			args: args
+			// fcn: fcn,
+			// args: args
 		};
 		let response_payloads = await channel.queryByChaincode(request);
 
@@ -50,148 +52,148 @@ var queryChaincode = async function (peer, channelName, chaincodeName, args, fcn
 
 		if (response_payloads != '') {
 			for (let i = 0; i < response_payloads.length; i++) {
-				logger.info('Batch', args[0] + '=' + response_payloads[i].toString('utf8'));
+				console.log('Batch', args[0] + '=' + response_payloads[i].toString('utf8'));
 			}
 			// return a JSON Object as response  
 			return JSON.parse(response_payloads.toString('utf8'));
 		} else {
-			logger.error('response_payloads is null');
+			console.log('response_payloads is null');
 			throw new Error('response_payload is null')
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		throw new Error(`${error.message}`);
 	}
 };
 
-var getBlockByNumber = async function (peer, channelName, blockNumber, username, org_name) {
+let getBlockByNumber = async function (peer, channelName, blockNumber, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-		var channel = client.getChannel(channelName);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
+		let channel = client.getChannel(channelName);
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
+			console.log(message);
 			throw new Error(message);
 		}
 
 		let response_payload = await channel.queryBlock(parseInt(blockNumber, peer));
 		if (response_payload) {
-			logger.debug(response_payload);
+			console.log(response_payload);
 			return response_payload;
 		} else {
-			logger.error('response_payload is null');
+			console.log('response_payload is null');
 			return 'response_payload is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
-var getTransactionByID = async function (peer, channelName, trxnID, username, org_name) {
+let getTransactionByID = async function (peer, channelName, trxnID, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-		var channel = client.getChannel(channelName);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
+		let channel = client.getChannel(channelName);
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
+			console.log(message);
 			throw new Error(message);
 		}
 
 		let response_payload = await channel.queryTransaction(trxnID, peer);
 		if (response_payload) {
-			logger.debug(response_payload);
+			console.log(response_payload);
 			return response_payload;
 		} else {
-			logger.error('response_payload is null');
+			console.log('response_payload is null');
 			return 'response_payload is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
-var getBlockByHash = async function (peer, channelName, hash, username, org_name) {
+let getBlockByHash = async function (peer, channelName, hash, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-		var channel = client.getChannel(channelName);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
+		let channel = client.getChannel(channelName);
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
+			console.log(message);
 			throw new Error(message);
 		}
 
 		let response_payload = await channel.queryBlockByHash(Buffer.from(hash), peer);
 		if (response_payload) {
-			logger.debug(response_payload);
+			console.log(response_payload);
 			return response_payload;
 		} else {
-			logger.error('response_payload is null');
+			console.log('response_payload is null');
 			return 'response_payload is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
-var getChainInfo = async function (peer, channelName, username, org_name) {
+let getChainInfo = async function (peer, channelName, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-		var channel = client.getChannel(channelName);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
+		let channel = client.getChannel(channelName);
 		if (!channel) {
 			let message = util.format('Channel %s was not defined in the connection profile', channelName);
-			logger.error(message);
+			console.log(message);
 			throw new Error(message);
 		}
 
 		let response_payload = await channel.queryInfo(peer);
 		if (response_payload) {
-			logger.debug(response_payload);
+			console.log(response_payload);
 			return response_payload;
 		} else {
-			logger.error('response_payload is null');
+			console.log('response_payload is null');
 			return 'response_payload is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
 //getInstalledChaincodes
-var getInstalledChaincodes = async function (peer, channelName, type, username, org_name) {
+let getInstalledChaincodes = async function (peer, channelName, type, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
 
 		let response = null
 		if (type === 'installed') {
 			response = await client.queryInstalledChaincodes(peer, true); //use the admin identity
 		} else {
-			var channel = client.getChannel(channelName);
+			let channel = client.getChannel(channelName);
 			if (!channel) {
 				let message = util.format('Channel %s was not defined in the connection profile', channelName);
-				logger.error(message);
+				console.log(message);
 				throw new Error(message);
 			}
 			response = await channel.queryInstantiatedChaincodes(peer, true); //use the admin identity
 		}
 		if (response) {
 			if (type === 'installed') {
-				logger.debug('<<< Installed Chaincodes >>>');
+				console.log('<<< Installed Chaincodes >>>');
 			} else {
-				logger.debug('<<< Instantiated Chaincodes >>>');
+				console.log('<<< Instantiated Chaincodes >>>');
 			}
-			var details = [];
+			let details = [];
 			for (let i = 0; i < response.chaincodes.length; i++) {
-				logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
+				console.log('name: ' + response.chaincodes[i].name + ', version: ' +
 					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
 				);
 				details.push('name: ' + response.chaincodes[i].name + ', version: ' +
@@ -200,35 +202,35 @@ var getInstalledChaincodes = async function (peer, channelName, type, username, 
 			}
 			return details;
 		} else {
-			logger.error('response is null');
+			console.log('response is null');
 			return 'response is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
-var getChannels = async function (peer, username, org_name) {
+let getChannels = async function (peer, username, org_name) {
 	try {
 		// first setup the client for this org
-		var client = await helper.getClientForOrg(org_name, username);
-		logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
+		let client = await helper.getClientForOrg(org_name, username);
+		console.log('Successfully got the fabric client for the organization "%s"', org_name);
 
 		let response = await client.queryChannels(peer);
 		if (response) {
-			logger.debug('<<< channels >>>');
-			var channelNames = [];
+			console.log('<<< channels >>>');
+			let channelNames = [];
 			for (let i = 0; i < response.channels.length; i++) {
 				channelNames.push('channel id: ' + response.channels[i].channel_id);
 			}
-			logger.debug(channelNames);
+			console.log(channelNames);
 			return response;
 		} else {
-			logger.error('response_payloads is null');
+			console.log('response_payloads is null');
 			return 'response_payloads is null';
 		}
 	} catch (error) {
-		logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+		console.log('Failed to query due to error: ' + error.stack ? error.stack : error);
 		return error.toString();
 	}
 };
