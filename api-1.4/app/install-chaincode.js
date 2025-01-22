@@ -29,10 +29,10 @@ let installChaincode = async function(peers, chaincodeName, chaincodePath,
 		// first setup the client for this org
 		let client = await helper.getClientForOrg(org_name, username);
 		console.log('Successfully got the fabric client for the organization "%s"', org_name);
-		console.log(chaincodePath)
+		console.log("chaincodePath",path.join(__dirname,'../','../artifacts/src/github.com/chaincode_artys'))
 		let request = {
 			targets: peers,
-			chaincodePath: path.join(__dirname,'../artifacts/src/github.com/chaincode_artys'),
+			chaincodePath: path.join(__dirname,'../','../artifacts/src/github.com/chaincode_artys'),
 			chaincodeId: chaincodeName,
 			chaincodeVersion: chaincodeVersion,
 			chaincodeType: chaincodeType
