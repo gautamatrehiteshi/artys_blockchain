@@ -40,7 +40,7 @@ logger.level = 'debug';
 
 
 app.use((req, res, next) => {
-    console.log('New req for %s', req.originalUrl);
+    logger.debug('New req for %s', req.originalUrl);
     if (req.originalUrl.indexOf('/users') >= 0 || req.originalUrl.indexOf('/users/login') >= 0 || req.originalUrl.indexOf('/register') >= 0) {
         return next();
     }
@@ -58,15 +58,15 @@ app.use((req, res, next) => {
         } else {
             req.username = decoded.username;
             req.orgname = decoded.orgName;
-            console.log(util.format('Decoded from JWT token: username - %s, orgname - %s', decoded.username, decoded.orgName));
+            logger.debug(util.format('Decoded from JWT token: username - %s, orgname - %s', decoded.username, decoded.orgName));
             return next();
         }
     });
 });
 
 var server = http.createServer(app).listen(port, function () { console.log(`Server started on ${port}`) });
-console.log('****************** SERVER STARTED ************************');
-console.log('***************  http://%s:%s  ******************', host, port);
+logger.info('****************** SERVER STARTED ************************');
+logger.info('***************  http://%s:%s  ******************', host, port);
 server.timeout = 240000;
 
 function getErrorMessage(field) {
@@ -81,9 +81,9 @@ function getErrorMessage(field) {
 app.post('/users', async function (req, res) {
     var username = req.body.username;
     var orgName = req.body.orgName;
-    console.log('End point : /users');
-    console.log('User name : ' + username);
-    console.log('Org name  : ' + orgName);
+    logger.debug('End point : /users');
+    logger.debug('User name : ' + username);
+    logger.debug('Org name  : ' + orgName);
     if (!username) {
         res.json(getErrorMessage('\'username\''));
         return;
@@ -101,13 +101,13 @@ app.post('/users', async function (req, res) {
 
     let response = await helper.getRegisteredUser(username, orgName, true);
 
-    console.log('-- returned from registering the username %s for organization %s', username, orgName);
+    logger.debug('-- returned from registering the username %s for organization %s', username, orgName);
     if (response && typeof response !== 'string') {
-        console.log('Successfully registered the username %s for organization %s', username, orgName);
+        logger.debug('Successfully registered the username %s for organization %s', username, orgName);
         response.token = token;
         res.json(response);
     } else {
-        console.log('Failed to register the username %s for organization %s with::%s', username, orgName, response);
+        logger.debug('Failed to register the username %s for organization %s with::%s', username, orgName, response);
         res.json({ success: false, message: response });
     }
 
@@ -117,9 +117,9 @@ app.post('/users', async function (req, res) {
 app.post('/register', async function (req, res) {
     var username = req.body.username;
     var orgName = req.body.orgName;
-    console.log('End point : /users');
-    console.log('User name : ' + username);
-    console.log('Org name  : ' + orgName);
+    logger.debug('End point : /users');
+    logger.debug('User name : ' + username);
+    logger.debug('Org name  : ' + orgName);
     if (!username) {
         res.json(getErrorMessage('\'username\''));
         return;
@@ -139,13 +139,13 @@ app.post('/register', async function (req, res) {
 
     let response = await helper.registerAndGerSecret(username, orgName);
 
-    console.log('-- returned from registering the username %s for organization %s', username, orgName);
+    logger.debug('-- returned from registering the username %s for organization %s', username, orgName);
     if (response && typeof response !== 'string') {
-        console.log('Successfully registered the username %s for organization %s', username, orgName);
+        logger.debug('Successfully registered the username %s for organization %s', username, orgName);
         response.token = token;
         res.json(response);
     } else {
-        console.log('Failed to register the username %s for organization %s with::%s', username, orgName, response);
+        logger.debug('Failed to register the username %s for organization %s with::%s', username, orgName, response);
         res.json({ success: false, message: response });
     }
 
@@ -155,9 +155,9 @@ app.post('/register', async function (req, res) {
 app.post('/users/login', async function (req, res) {
     var username = req.body.username;
     var orgName = req.body.orgName;
-    console.log('End point : /users');
-    console.log('User name : ' + username);
-    console.log('Org name  : ' + orgName);
+    logger.debug('End point : /users');
+    logger.debug('User name : ' + username);
+    logger.debug('Org name  : ' + orgName);
     if (!username) {
         res.json(getErrorMessage('\'username\''));
         return;
@@ -187,7 +187,7 @@ app.post('/users/login', async function (req, res) {
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
-        console.log('==================== INVOKE ON CHAINCODE ==================');
+        logger.debug('==================== INVOKE ON CHAINCODE ==================');
         var peers = req.body.peers;
         var chaincodeName = req.params.chaincodeName;
         var channelName = req.params.channelName;
@@ -195,10 +195,10 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
         var args = req.body.args;
         var transient = req.body.transient;
         console.log(`Transient data is ;${transient}`)
-        console.log('channelName  : ' + channelName);
-        console.log('chaincodeName : ' + chaincodeName);
-        console.log('fcn  : ' + fcn);
-        console.log('args  : ' + args);
+        logger.debug('channelName  : ' + channelName);
+        logger.debug('chaincodeName : ' + chaincodeName);
+        logger.debug('fcn  : ' + fcn);
+        logger.debug('args  : ' + args);
         if (!chaincodeName) {
             res.json(getErrorMessage('\'chaincodeName\''));
             return;
@@ -238,7 +238,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
 
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
-        console.log('==================== QUERY BY CHAINCODE ==================');
+        logger.debug('==================== QUERY BY CHAINCODE ==================');
 
         var channelName = req.params.channelName;
         var chaincodeName = req.params.chaincodeName;
@@ -247,10 +247,10 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
         let fcn = req.query.fcn;
         let peer = req.query.peer;
 
-        console.log('channelName : ' + channelName);
-        console.log('chaincodeName : ' + chaincodeName);
-        console.log('fcn : ' + fcn);
-        console.log('args : ' + args);
+        logger.debug('channelName : ' + channelName);
+        logger.debug('chaincodeName : ' + chaincodeName);
+        logger.debug('fcn : ' + fcn);
+        logger.debug('args : ' + args);
 
         if (!chaincodeName) {
             res.json(getErrorMessage('\'chaincodeName\''));
@@ -271,7 +271,7 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
         console.log('args==========', args);
         args = args.replace(/'/g, '"');
         args = JSON.parse(args);
-        console.log(args);
+        logger.debug(args);
 
         let message = await query.query(channelName, chaincodeName, args, fcn, req.username, req.orgname);
 
@@ -294,7 +294,7 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
 
 app.get('/qscc/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
-        console.log('==================== QUERY BY CHAINCODE ==================');
+        logger.debug('==================== QUERY BY CHAINCODE ==================');
 
         var channelName = req.params.channelName;
         var chaincodeName = req.params.chaincodeName;
@@ -303,10 +303,10 @@ app.get('/qscc/channels/:channelName/chaincodes/:chaincodeName', async function 
         let fcn = req.query.fcn;
         // let peer = req.query.peer;
 
-        console.log('channelName : ' + channelName);
-        console.log('chaincodeName : ' + chaincodeName);
-        console.log('fcn : ' + fcn);
-        console.log('args : ' + args);
+        logger.debug('channelName : ' + channelName);
+        logger.debug('chaincodeName : ' + chaincodeName);
+        logger.debug('fcn : ' + fcn);
+        logger.debug('args : ' + args);
 
         if (!chaincodeName) {
             res.json(getErrorMessage('\'chaincodeName\''));
@@ -327,7 +327,7 @@ app.get('/qscc/channels/:channelName/chaincodes/:chaincodeName', async function 
         console.log('args==========', args);
         args = args.replace(/'/g, '"');
         args = JSON.parse(args);
-        console.log(args);
+        logger.debug(args);
 
         let response_payload = await qscc.qscc(channelName, chaincodeName, args, fcn, req.username, req.orgname);
 
